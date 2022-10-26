@@ -1,0 +1,79 @@
+.caption{
+  text-align: center;
+}
+.padding_table {
+  padding: 0 75px
+}
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: #888;
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.player-name {
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.label {
+  width: 150px;
+}
+.container1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container1:last-of-type {
+  display: none;
+}
+.myradio {
+  overflow: hidden;
+  width: 230px;
+  flex-direction: row-reverse;
+}
+.myradio:not(:checked) > input {
+  display: none;
+}
+.myradio:not(:checked) > label {
+  float: right;
+  width: 42px;
+  padding: 0;
+  cursor: pointer;
+  font-size: 32px;
+  line-height: 32px;
+  color: lightgrey;
+  text-shadow: 1px 1px #bbb;
+}
+.myradio:not(:checked) > label:before {
+  content: "★";
+}
+.myradio > input:checked ~ label {
+  color: gold;
+  text-shadow: 1px 1px #c60;
+}
+.myradio:not(:checked) > label:hover,
+.myradio:not(:checked) > label:hover ~ label {
+  color: gold;
+}
+.myradio > label > input:checked,
+label:hover,
+.myradio > label > input:checked,
+label:hover ~ label,
+.myradio > label ~ label input:checked,
+label:hover,
+.myradio > label ~ label input:checked,
+label:hover ~ label,
+.myradio > label:hover ~ input:checked ~ label {
+  color: gold;
+  text-shadow: 1px 1px goldenrod;
+}
+.myradio > label:active {
+  position: relative;
+}
+.center {
+  justify-content: center;
+}

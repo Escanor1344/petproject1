@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="{% url 'randomchoice'%}" method="POST" style="display: flex; align-items: center; flex-direction: column; gap: 30px">
+    <div class="wrapper">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form, player in packed %}
+    <fieldset>
+        <p class="player-name">{{ player }}</p>
+        {% for field in form %}
+        <div class="container1">
+            <span class="label">{{ field.label }}</span>
+            <div class="myradio"> {% for radio in field %}
+                {{ radio.tag }}
+                <label for="{{ radio.id_for_label }}">
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </fieldset>
+    {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <input type="submit">
+    {% else %}
+    <p>You must be logged in to post a review. <span><a href="{% url 'login' %}">Login now</a></span></p>
+    {% endif %}
+</form>
+{% endblock %}
