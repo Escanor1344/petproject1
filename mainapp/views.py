@@ -19,6 +19,7 @@ MENU = [
     {'title': 'O сайте', 'url_name': 'about'},
     {'title': 'Контакты', 'url_name': 'contact'},
 ]
+#test comment
 
 MESSAGE_TAGS = {
     messages.INFO: '',
