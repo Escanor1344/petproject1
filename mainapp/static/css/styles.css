@@ -1,5 +1,15 @@
 .caption{
   text-align: center;
+  font-size: 24px;
+}
+.header-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+.random-btn {
+  width: 10.9%;
+  position: absolute;
+  right: 0;
 }
 .padding_table {
   padding: 0 75px
@@ -76,4 +86,66 @@ label:hover ~ label,
 }
 .center {
   justify-content: center;
+}
+
+table tr td {
+  padding: 0 !important;
+}
+
+.star-ratings-css::before {
+  content: "★★★★★";
+  opacity: 0.3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.star-ratings-css::after {
+  color: gold;
+  content: "★★★★★";
+  text-shadow: 0 1px 0 #ab5414;
+  z-index: 1;
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+.star-ratings-css {
+  font-size: 25px;
+  margin: 0 auto;
+  position: relative;
+  display: inline-flex;
+}
+[starCount="0"]::after {
+  width: 0%;
+}
+[starCount="0,5"]::after {
+  width: 9.5%;
+}
+[starCount="1.0"]::after {
+  width: 19%;
+}
+[starCount="1.5"]::after {
+  width: 30%;
+}
+[starCount="2.0"]::after {
+  width: 37%;
+}
+[starCount="2.5"]::after {
+  width: 50%;
+}
+[starCount="3.0"]::after {
+  width: 58%;
+}
+[starCount="3.5"]::after {
+  width: 70%;
+}
+[starCount="4.0"]::after {
+  width: 78%;
+}
+[starCount="4.5"]::after {
+  width: 89.5%;
+}
+[starCount="5.0"]::after {
+  width: 100%;
 }

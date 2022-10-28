@@ -13,11 +13,10 @@ from django.template.defaulttags import register
 from datetime import timedelta, date
 from django.contrib import messages
 
-
 MENU = [
-    {'title': 'Главная', 'url_name': '/'},
-    {'title': 'O сайте', 'url_name': 'about'},
-    {'title': 'Контакты', 'url_name': 'contact'},
+    {'title': 'Home', 'url_name': '/'},
+    {'title': 'About', 'url_name': 'about'},
+    {'title': 'Contacts', 'url_name': 'contact'},
 ]
 
 MESSAGE_TAGS = {
@@ -39,7 +38,7 @@ class PlayerColumn(ListView):
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['menu'] = MENU
-        context['title'] = 'Главная страница'
+        context['title'] = 'Home'
         context['cat_selected'] = 0
         context['avg_rating'] = self.avg_rating()
         if self.request.user.is_anonymous is False:
@@ -82,10 +81,10 @@ class PlayerColumn(ListView):
         avg_rating = {}
         for player in Player.objects.all():
             total = ReviewRating.objects.filter(player=player).aggregate(
-                avg=Avg((F('health') + F('speed') + F('body_strength') + F('strength_environment') + F('talent')) / 5)
+                avg=Avg((F('health') + F('speed') + F('body_strength') + F('strength_environment') + F('talent')) / 5.0)
             )
             if total.get('avg') is not None:
-                avg_rating[player.id] = round(total.get('avg'), 1)
+                avg_rating[player.id] = round(total.get('avg') * 2) / 2
             else:
                 avg_rating[player.id] = 0
         return avg_rating
@@ -113,15 +112,15 @@ def create_choice(request, player_id):
             fs.user = user
             fs.player = player
             fs.save()
-            messages.add_message(request, messages.SUCCESS, 'Спасибо за Ваш голос!')
+            messages.add_message(request, messages.SUCCESS, 'Thanks for your vote!')
             return redirect('/')
         else:
-            messages.add_message(request, messages.INFO, 'Вы уже голосовали за этого игрока.')
+            messages.add_message(request, messages.INFO, 'You have already voted for this player.')
             return redirect('/')
     else:
         form = ReviewForm()
         return render(request, "makechoice.html", {
-            'form': form, 'player': player, 'menu': MENU, 'title': 'Голосование'
+            'form': form, 'player': player, 'menu': MENU, 'title': 'Voting'
         })
 
 
@@ -141,11 +140,10 @@ def random_choice(request):
                 fs.player = form.cleaned_data.get('player')
                 fs.is_random_choice = True
                 fs.save()
-            messages.add_message(request, messages.SUCCESS, 'Спасибо за Ваш голос!')
+            messages.add_message(request, messages.SUCCESS, 'Thanks for your vote!')
             return redirect('/')
         else:
-            messages.add_message(request, messages.INFO, 'Вы не можете повторно голосовать за'
-                                                         ' рандомных игроков в течении одной недели')
+            messages.add_message(request, messages.INFO, 'You cannot re-vote for random players within one week')
             return redirect('/')
     else:
         formset = review_form_set(initial=[{'player': x.id} for x in random_players])
@@ -154,5 +152,5 @@ def random_choice(request):
             'menu': MENU,
             'random_players': random_players,
             'packed': zip(formset, random_players),
-            'title': 'Рандомный выбор'
+            'title': 'Random choice'
         })

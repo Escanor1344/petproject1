@@ -32,7 +32,7 @@
         {% if request.user.is_authenticated %}
         <div class="col-md-3 text-end">
             <span style="margin-right: 10px;">{{ user.username }}</span>
-            <a class="btn btn-primary" href="{% url 'logout' %}" role="button">Выйти</a>
+            <a class="btn btn-primary" href="{% url 'logout' %}" role="button">Logout</a>
         </div>
         {% else %}
         <div class="col-md-3 text-end">

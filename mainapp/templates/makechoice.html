@@ -18,9 +18,9 @@
     </fieldset>
 
     {% if user.is_authenticated %}
-    <input type="submit">
+    <div class="Send-button"><input class="btn btn-primary" type="submit" value="Send"></div>
     {% else %}
-    <p>You must be logged in to post a review. <span><a href="{% url 'login' %}">Login now</a></span></p>
+    <p>You must be logged in to make a choice. <span><a href="{% url 'login' %}">Login now</a></span></p>
     {% endif %}
 </form>
 

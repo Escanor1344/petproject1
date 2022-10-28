@@ -11,8 +11,8 @@ class Player(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'Лучшие игроки фентези'
-        verbose_name_plural = 'Лучшие игроки фентези'
+        verbose_name = 'Best fantasy players'
+        verbose_name_plural = 'Best fantasy players'
         ordering = ['id']
 
 
@@ -32,6 +32,6 @@ class ReviewRating(models.Model):
         return x
 
     class Meta:
-        verbose_name = 'Голосование'
-        verbose_name_plural = 'Голосование'
+        verbose_name = 'Voting'
+        verbose_name_plural = 'Voting'
         ordering = ['id']

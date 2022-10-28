@@ -6,10 +6,10 @@ from .models import ReviewRating
 
 
 class RegisterUserForm(UserCreationForm):
-    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-    password2 = forms.CharField(label='Повтор пароля', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-    email = forms.EmailField(label='Почта', widget=forms.EmailInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    password2 = forms.CharField(label='Password repeat', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    email = forms.EmailField(label='Mail', widget=forms.EmailInput(attrs={'class': 'form-input'}))
     field_order = ['username', 'email', 'password1', 'password2']
 
     class Meta:
@@ -18,8 +18,8 @@ class RegisterUserForm(UserCreationForm):
 
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
 
 
 class ReviewForm(ModelForm):
@@ -38,11 +38,11 @@ class ReviewForm(ModelForm):
         }
 
         labels = {
-            'health': 'Здоровье:',
-            'speed': 'Скорость:',
-            'body_strength': 'Сила:',
-            'strength_environment': 'Сила окружения:',
-            'talent': 'Талант:'
+            'health': 'Health:',
+            'speed': 'Speed:',
+            'body_strength': 'Body strength:',
+            'strength_environment': 'Environment:',
+            'talent': 'Talent:'
         }
 
     def __init__(self, *args, **kwargs):
