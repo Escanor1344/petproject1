@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<!--Form with stars for voting-->
 <form method="POST" xmlns="http://www.w3.org/1999/html" style="display: flex; align-items: center; flex-direction: column; gap: 30px">
 {% csrf_token %}
     <fieldset>
@@ -18,7 +19,7 @@
     </fieldset>
 
     {% if user.is_authenticated %}
-    <div class="Send-button"><input class="btn btn-primary" type="submit" value="Send"></div>
+    <div class="Send-button d-grid gap-2 col-1 mx-auto"><input class="btn btn-outline-primary" type="submit" value="Send"></div>
     {% else %}
     <p>You must be logged in to make a choice. <span><a href="{% url 'login' %}">Login now</a></span></p>
     {% endif %}

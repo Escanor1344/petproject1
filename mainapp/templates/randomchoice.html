@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<!--Forms with stars for voting-->
 <form action="{% url 'randomchoice'%}" method="POST" style="display: flex; align-items: center; flex-direction: column; gap: 30px">
     <div class="wrapper">
     {% csrf_token %}
@@ -23,7 +24,7 @@
     </div>
 
     {% if user.is_authenticated %}
-    <input type="submit">
+    <div class="Send-button d-grid gap-2 col-1 mx-auto"><input class="btn btn-outline-primary" type="submit" value="Send"></div>
     {% else %}
     <p>You must be logged in to make a choice. <span><a href="{% url 'login' %}">Login now</a></span></p>
     {% endif %}

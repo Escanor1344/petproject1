@@ -23,7 +23,7 @@ class LoginUserForm(AuthenticationForm):
 
 
 class ReviewForm(ModelForm):
-
+    """ Form for voting. """
     class Meta:
         model = ReviewRating
         fields = ['health', 'speed', 'body_strength', 'strength_environment', 'talent', 'player']
@@ -46,5 +46,6 @@ class ReviewForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """ Not allow to send POST request without filling all form """
         super(ReviewForm, self).__init__(*args, **kwargs)
         self.fields['player'].required = False

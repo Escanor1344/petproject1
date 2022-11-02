@@ -1,3 +1,4 @@
+/* Star-rating in the forms of voting. */
 .caption{
   text-align: center;
   font-size: 24px;
@@ -92,6 +93,7 @@ table tr td {
   padding: 0 !important;
 }
 
+/* Average star-rating on the main page. */
 .star-ratings-css::before {
   content: "★★★★★";
   opacity: 0.3;
