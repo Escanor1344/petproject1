@@ -1,15 +1,13 @@
-from django.db.models import F
 from django.contrib.auth.views import LoginView
-from django.db.models import Avg
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
+from mainapp import services
 from mainapp.forms import RegisterUserForm, LoginUserForm, ReviewForm
 from django.views.generic import ListView
 from mainapp.models import Player, ReviewRating
 import random
 from django.forms import formset_factory
-from django.template.defaulttags import register
 from datetime import timedelta, date
 from django.contrib import messages
 
@@ -32,20 +30,15 @@ class PlayerColumn(ListView):
     template_name = 'index.html'
     context_object_name = 'player'
 
-    @register.filter
-    def get_item(dictionary, key):
-        """ Custom template filter. Gets dict from avg_rating() and in_four_days(). """
-        return dictionary.get(key)
-
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['menu'] = MENU
         context['title'] = 'Home'
         context['cat_selected'] = 0
-        context['avg_rating'] = self.avg_rating()  # Gets dict from avg_rating().
+        context['avg_rating'] = services.avg_rating()  # Gets dict from avg_rating().
         if self.request.user.is_anonymous is False:
-            context['in_four_days'] = self.in_four_days(self.request)  # Gets dict from in_four_days().
-            context['in_seven_days'] = self.in_seven_days(self.request)  # Gets date from in_seven_days().
+            context['in_four_days'] = services.in_four_days(user=self.request.user)  # Gets dict from services.in_four_days().
+            context['in_seven_days'] = services.in_seven_days(user=self.request.user)  # Gets date from services.in_seven_days().
             context['now'] = date.today()
             context['position'] = self.request.GET.get("sort")  # Gets position by sort.
             context['count_players'] = range(0, len(Player.objects.all()))  # For numbering players.
@@ -58,50 +51,6 @@ class PlayerColumn(ListView):
             queryset = Player.objects.filter(position=sort_by)
         # Return sorted queryset of players.
         return queryset
-
-    def in_four_days(self, request):
-        """ Checking if four days have passed since last voting for a player. """
-        in_four_days = {}
-        for player in Player.objects.all():
-            x = ReviewRating.objects.filter(user=request.user, player=player, is_random_choice=False).last()
-            if x is not None:
-                in_four_days[player.id] = x.created_on + timedelta(4)
-            else:
-                in_four_days[player.id] = None
-        # Return dict:
-        # Key --> player.id
-        # Value --> created date + 4 days OR None
-        return in_four_days
-
-    def in_seven_days(self, request):
-        """ Checking if seven days have passed since last random voting. """
-        any_record = ReviewRating.objects.filter(user_id=self.request.user, is_random_choice=True).exists()
-        if any_record is True:
-            user = request.user
-            last_random = ReviewRating.objects.filter(user_id=user, is_random_choice=True).last()
-            seven_days = timedelta(7)
-            in_seven_days = last_random.created_on + seven_days
-            # Return date:
-            # Date = created date + 7 days
-            return in_seven_days
-        else:
-            return None
-
-    def avg_rating(self):
-        """ Count average rating for all players on the page. """
-        avg_rating = {}
-        for player in Player.objects.all():
-            total = ReviewRating.objects.filter(player=player).aggregate(
-                avg=Avg((F('health') + F('speed') + F('body_strength') + F('strength_environment') + F('talent')) / 5.0)
-            )
-            if total.get('avg') is not None:
-                avg_rating[player.id] = round(total.get('avg') * 2) / 2
-            else:
-                avg_rating[player.id] = 0
-        # Return dict:
-        # Key --> player.id
-        # Value --> int
-        return avg_rating
 
 
 class SignUp(CreateView):
@@ -152,7 +101,7 @@ def random_choice(request):
     players_list = list(Player.objects.all())
     random_players = random.sample(players_list, 3)
     # Making more than one form.
-    review_form_set = formset_factory(ReviewForm, extra=0)
+    review_form_set = formset_factory(ReviewForm, extra=0)  # Making more than one form.
     formset = review_form_set(request.POST, initial=[{'player': x.id} for x in random_players])
     if request.method == 'POST':
         last_date = ReviewRating.objects.filter(user_id=request.user, is_random_choice=True).last()

@@ -46,6 +46,6 @@ class ReviewForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        """ Not allow to send POST request without filling all form """
+        """ Not allow to send POST request without filling all forms. """
         super(ReviewForm, self).__init__(*args, **kwargs)
         self.fields['player'].required = False

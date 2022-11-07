@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -19,11 +20,11 @@ class Player(models.Model):
 class ReviewRating(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    health = models.IntegerField()
-    speed = models.IntegerField()
-    body_strength = models.IntegerField()
-    strength_environment = models.IntegerField()
-    talent = models.IntegerField()
+    health = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    speed = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    body_strength = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    strength_environment = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    talent = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     created_on = models.DateField(auto_now=True)
     is_random_choice = models.BooleanField(default=False)
 

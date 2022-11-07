@@ -8,8 +8,8 @@ The site has a voting system for players based on 5 key metrics, namely:
 + health :medical_symbol:
 + speed :runner:
 + body_strength :muscle:
-+ strength_environment 
-+ talent :crown: :busts_in_silhouette:	
++ strength_environment :busts_in_silhouette:
++ talent :crown:	
 
 ![First](mainapp/static/images/Example2.png)
 
