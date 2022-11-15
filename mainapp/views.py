@@ -1,15 +1,17 @@
-from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from mainapp import services
-from mainapp.forms import RegisterUserForm, LoginUserForm, ReviewForm
+from mainapp.forms import RegisterUserForm, ReviewForm
 from django.views.generic import ListView
 from mainapp.models import Player, ReviewRating
 import random
 from django.forms import formset_factory
 from datetime import timedelta, date
 from django.contrib import messages
+from django.contrib.auth.signals import user_logged_out
+from django.dispatch import receiver
+
 
 MENU = [
     {'title': 'Home', 'url_name': '/'},
@@ -60,9 +62,16 @@ class SignUp(CreateView):
     template_name = 'registration/signup.html'
 
 
-class Login(LoginView):
-    form_class = LoginUserForm
-    template_name = 'registration/login.html'
+def user_details_after(strategy, details, user=None, *args, **kwargs):
+    """ Show message after login with Google. """
+    if not user:
+        messages.info(strategy.request, "You are logged in with Google.")
+
+
+@receiver(user_logged_out)
+def on_user_logged_out(sender, request, **kwargs):
+    """ Signal --> User has been logged out. Show message. """
+    messages.info(request, 'You are logged out.')
 
 
 def create_choice(request, player_id):

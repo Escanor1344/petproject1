@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -46,8 +47,13 @@
     </div>
     <div class="Send-button"><input class="btn btn-outline-secondary" type="submit" value="Send"></div>
 </form>
-<div class="d-grid gap-2 col-2 mx-auto"><a href="{% url 'login' %}" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">Sign in</a>
-    <a href="{% url 'index' %}" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">Home</a></div>
+<div class="d-grid gap-2 col-2 mx-auto">
+    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-block" style="background-color: #87CEEB;" type="submit">
+    <img src="{% static 'images/Google.png' %}" alt="Google" style="font-size:30px; width: 30px;"> Sing up with Google
+    </a>
+    <a href="{% url 'login' %}" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">Sign in</a>
+    <a href="{% url 'index' %}" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">Home</a>
+</div>
 {% endblock %}
 </body>
 </html>
