@@ -1,6 +1,12 @@
+from django.db.models import Avg
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from mainapp import services
 from mainapp.forms import RegisterUserForm, ReviewForm
 from django.views.generic import ListView
@@ -11,7 +17,7 @@ from datetime import timedelta, date
 from django.contrib import messages
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
-
+from mainapp.serializers import ReviewRatingSerializer, PlayerSerializer
 
 MENU = [
     {'title': 'Home', 'url_name': '/'},
@@ -39,8 +45,10 @@ class PlayerColumn(ListView):
         context['cat_selected'] = 0
         context['avg_rating'] = services.avg_rating()  # Gets dict from avg_rating().
         if self.request.user.is_anonymous is False:
-            context['in_four_days'] = services.in_four_days(user=self.request.user)  # Gets dict from services.in_four_days().
-            context['in_seven_days'] = services.in_seven_days(user=self.request.user)  # Gets date from services.in_seven_days().
+            # Gets dict from services.in_four_days().
+            context['in_four_days'] = services.in_four_days(user=self.request.user)
+            # Gets date from services.in_seven_days().
+            context['in_seven_days'] = services.in_seven_days(user=self.request.user)
             context['now'] = date.today()
             context['position'] = self.request.GET.get("sort")  # Gets position by sort.
             context['count_players'] = range(0, len(Player.objects.all()))  # For numbering players.
@@ -142,3 +150,43 @@ def random_choice(request):
             'packed': zip(formset, random_players),
             'title': 'Random choice'
         })
+
+
+class PlayersList(ListAPIView):
+    """ Representing all players with their teams, positions and id. """
+    serializer_class = PlayerSerializer
+    queryset = Player.objects.all()
+
+
+class AverageRatingList(APIView):
+    """ Representing all player with their current average rating. """
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, **kwargs):
+        x = []
+        y = None
+        # Check if is there a position in the body of the request.
+        if kwargs:
+            # If there is.
+            y = Player.objects.filter(position=self.kwargs['position'])
+        else:
+            # If there is not.
+            y = Player.objects.all()
+
+        for player in y:
+            health = ReviewRating.objects.filter(player=player).aggregate(avg=Avg('health'))
+            speed = ReviewRating.objects.filter(player=player).aggregate(avg=Avg('speed'))
+            body_strength = ReviewRating.objects.filter(player=player).aggregate(avg=Avg('body_strength'))
+            strength_environment = ReviewRating.objects.filter(player=player).aggregate(avg=Avg('strength_environment'))
+            talent = ReviewRating.objects.filter(player=player).aggregate(avg=Avg('talent'))
+
+            x.append({'player': player.name,
+                      'health': health.get('avg'),
+                      'speed': speed.get('avg'),
+                      'body_strength': body_strength.get('avg'),
+                      'strength_environment': strength_environment.get('avg'),
+                      'talent': talent.get('avg')
+                      })
+
+        results = ReviewRatingSerializer(x, many=True).data
+        return Response(results)

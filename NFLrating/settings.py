@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainapp.apps.MainappConfig',
+    'rest_framework',
     'bootstrap5',
     'social_django',
 ]
@@ -81,9 +82,9 @@ WSGI_APPLICATION = 'NFLrating.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'FirstApp',
+        'NAME': 'FirstAppTest',
         'USER': 'postgres',
-        'PASSWORD': '12345',
+        'PASSWORD': '###',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -138,11 +139,18 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = "/"
 
 # Celery settings
-
 REDIS_HOST = '0.0.0.0'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+
+# Email sending settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ruslan84598459@gmail.com'
+EMAIL_HOST_PASSWORD = '###'
 
 # Social-auth-app-django
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
@@ -169,4 +177,10 @@ SOCIAL_AUTH_PIPELINE = (
 
 # Google
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '909512095838-32gfpcip444da7o673t73pdedlpgtfpv.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '###'
+
+#  Django REST framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 30
+}

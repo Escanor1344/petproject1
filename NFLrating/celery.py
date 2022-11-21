@@ -9,3 +9,10 @@ app = Celery('NFLrating')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
+
+app.conf.beat_schedule = {
+    'send-message-after-7-days': {
+        'task': 'mainapp.tasks.send_beat_mail',
+        'schedule': crontab(minute=0, hour=0),
+    },
+}

@@ -17,7 +17,7 @@ def in_four_days(user: object) -> dict[Any, timedelta | None | Any]:
     return difference
 
 
-def in_seven_days(user: object) -> object:
+def in_seven_days(user: object):
     """ Checking if seven days have passed since last random voting. """
     any_record = ReviewRating.objects.filter(user=user, is_random_choice=True).exists()
     if any_record is True:
