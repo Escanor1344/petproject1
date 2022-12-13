@@ -2,6 +2,12 @@ from django.db.models import Avg
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
+from django.views.generic import ListView
+from django.contrib import messages
+from django.contrib.auth.signals import user_logged_out
+from django.dispatch import receiver
+from django.forms import formset_factory
+
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,26 +15,18 @@ from rest_framework.views import APIView
 
 from mainapp import services
 from mainapp.forms import RegisterUserForm, ReviewForm
-from django.views.generic import ListView
 from mainapp.models import Player, ReviewRating
-import random
-from django.forms import formset_factory
-from datetime import timedelta, date
-from django.contrib import messages
-from django.contrib.auth.signals import user_logged_out
-from django.dispatch import receiver
 from mainapp.serializers import ReviewRatingSerializer, PlayerSerializer
+
+import random
+from datetime import timedelta, date
+
 
 MENU = [
     {'title': 'Home', 'url_name': '/'},
     {'title': 'About', 'url_name': 'about'},
     {'title': 'Contacts', 'url_name': 'contact'},
 ]
-
-MESSAGE_TAGS = {
-    messages.INFO: '',
-    messages.SUCCESS: '',
-}
 
 
 class PlayerColumn(ListView):
@@ -44,7 +42,7 @@ class PlayerColumn(ListView):
         context['title'] = 'Home'
         context['cat_selected'] = 0
         context['avg_rating'] = services.avg_rating()  # Gets dict from avg_rating().
-        if self.request.user.is_anonymous is False:
+        if self.request.user.is_authenticated:
             # Gets dict from services.in_four_days().
             context['in_four_days'] = services.in_four_days(user=self.request.user)
             # Gets date from services.in_seven_days().
@@ -56,6 +54,7 @@ class PlayerColumn(ListView):
 
     def get_queryset(self):
         queryset = Player.objects.all()
+        # Get position for sorting.
         sort_by = self.request.GET.get("sort")
         if sort_by is not None:
             queryset = Player.objects.filter(position=sort_by)
@@ -68,18 +67,6 @@ class SignUp(CreateView):
     form_class = RegisterUserForm
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
-
-
-def user_details_after(strategy, details, user=None, *args, **kwargs):
-    """ Show message after login with Google. """
-    if not user:
-        messages.info(strategy.request, "You are logged in with Google.")
-
-
-@receiver(user_logged_out)
-def on_user_logged_out(sender, request, **kwargs):
-    """ Signal --> User has been logged out. Show message. """
-    messages.info(request, 'You are logged out.')
 
 
 def create_choice(request, player_id):
@@ -99,11 +86,11 @@ def create_choice(request, player_id):
             # Save the form.
             fs.save()
             # Show message after redirect.
-            messages.add_message(request, messages.SUCCESS, 'Thanks for your vote!')
+            messages.success(request, 'Thanks for your vote!')
             return redirect('/')
         else:
             # Show message after redirect.
-            messages.add_message(request, messages.INFO, 'You have already voted for this player.')
+            messages.info(request, 'You have already voted for this player.')
             return redirect('/')
     else:
         form = ReviewForm()
@@ -135,11 +122,11 @@ def random_choice(request):
                 # Save the form.
                 fs.save()
             # Show message after redirect.
-            messages.add_message(request, messages.SUCCESS, 'Thanks for your vote!')
+            messages.success(request, 'Thanks for your vote!')
             return redirect('/')
         else:
             # Show message after redirect.
-            messages.add_message(request, messages.INFO, 'You cannot re-vote for random players within one week.')
+            messages.info(request, 'You cannot re-vote for random players within one week.')
             return redirect('/')
     else:
         formset = review_form_set(initial=[{'player': x.id} for x in random_players])
@@ -190,3 +177,14 @@ class AverageRatingList(APIView):
 
         results = ReviewRatingSerializer(x, many=True).data
         return Response(results)
+
+def user_details_after(strategy, details, user=None, *args, **kwargs):
+    """ Show message after login with Google. """
+    if not user:
+        messages.info(strategy.request, "You are logged in with Google.")
+
+
+@receiver(user_logged_out)
+def on_user_logged_out(sender, request, **kwargs):
+    """ Signal --> User has been logged out. Show message. """
+    messages.info(request, 'You are logged out.')

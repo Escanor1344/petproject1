@@ -8,9 +8,6 @@ class Player(models.Model):
     position = models.CharField(max_length=30)
     team = models.CharField(max_length=30)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Best fantasy players'
         verbose_name_plural = 'Best fantasy players'
@@ -27,10 +24,6 @@ class ReviewRating(models.Model):
     talent = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     created_on = models.DateField(auto_now=True)
     is_random_choice = models.BooleanField(default=False)
-
-    def __str__(self):
-        x = f'Player:{self.player} || User:{self.user}'
-        return x
 
     class Meta:
         verbose_name = 'Voting'

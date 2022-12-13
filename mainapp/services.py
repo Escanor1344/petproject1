@@ -5,7 +5,7 @@ from django.db.models import F
 from mainapp.models import Player, ReviewRating
 
 
-def in_four_days(user: object) -> dict[Any, timedelta | None | Any]:
+def in_four_days(user) -> dict:
     """ Checking if four days have passed since last voting for a player. """
     difference = {}
     for player in Player.objects.all():
@@ -17,7 +17,7 @@ def in_four_days(user: object) -> dict[Any, timedelta | None | Any]:
     return difference
 
 
-def in_seven_days(user: object):
+def in_seven_days(user):
     """ Checking if seven days have passed since last random voting. """
     any_record = ReviewRating.objects.filter(user=user, is_random_choice=True).exists()
     if any_record is True:
@@ -31,7 +31,7 @@ def in_seven_days(user: object):
         return None
 
 
-def avg_rating() -> dict[Any, float | int]:
+def avg_rating() -> dict:
     """ Count average rating for all players on the page. """
     average = {}
     for player in Player.objects.all():
